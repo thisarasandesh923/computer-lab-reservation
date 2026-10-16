@@ -38,10 +38,14 @@ const reservationSchema = new mongoose.Schema({
         type: String,
         required: true,
         default: "pending"
+    },
+    numOfSeats: {
+        type: Number,
+        required: true,
     }
 
 });
 
-const Reservation = mongoose.Model("Reservation", reservationSchema);
+const Reservation = mongoose.model("Reservation", reservationSchema);
 
 export default Reservation;

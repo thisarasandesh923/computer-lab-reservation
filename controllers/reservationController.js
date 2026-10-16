@@ -1,10 +1,11 @@
 import Reservation from "../models/Reservation.js";
+import Lab from "../models/laboratory.js";
 
 
 const createReservation = async (req, res) => {
     try {
 
-    const { user, lab, date, startTime, endTime, reason } = req.body;
+    const { user, lab, date, startTime, endTime, reason, numOfSeats } = req.body;
 
              if (!user || !lab || !date || !startTime || !endTime || !reason)
 
@@ -21,6 +22,28 @@ const createReservation = async (req, res) => {
                      message: " start time should be early than the end time "
 
                 });
+
+            }
+
+        const selectedLab = await Lab.findById(lab);
+
+             if (!selectedLab)
+
+            {
+                 return res.status(404).json({
+                 message: "Lab not found"
+                });
+            }
+
+
+             if (numOfSeats > selectedLab.seatCount)
+
+            {
+
+                 return res.status(400).json({
+                     message :"Seat count is too much"
+
+                 });
 
             }
 
@@ -47,6 +70,7 @@ const createReservation = async (req, res) => {
             startTime,
             endTime,
             reason,
+            numOfSeats
         });
 
         res.status(201).json(reservation);

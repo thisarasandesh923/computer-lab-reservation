@@ -24,6 +24,6 @@ const labScheme = new mongoose.Schema({
     }
 });
 
-const Lab = mongoose.model("Lab", labscheme);
+const Lab = mongoose.model("Lab", labScheme);
 
 export default Lab;
