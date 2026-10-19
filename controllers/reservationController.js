@@ -7,7 +7,7 @@ const createReservation = async (req, res) => {
 
     const { user, lab, date, startTime, endTime, reason, numOfSeats } = req.body;
 
-             if (!user || !lab || !date || !startTime || !endTime || !reason)
+             if (!user || !lab || !date || !startTime || !endTime || !reason || numOfSeats==null)
 
             {
                 return res.status(400).json({
@@ -15,7 +15,22 @@ const createReservation = async (req, res) => {
                 });
             }
 
-             if (startTime >= endTime)
+        const bookingDate = new Date(date);
+
+        if (isNaN(bookingDate.getTime()))
+        {
+            return res.status(400).json
+                (
+                    {
+                        message: "Invalid date"
+                    }
+                );
+        }
+
+
+
+
+            if (startTime >= endTime)
 
             {
                  return res.status(400).json({
@@ -24,6 +39,16 @@ const createReservation = async (req, res) => {
                 });
 
             }
+
+        if (!Number.isInteger(numOfSeats) || numOfSeats <= 0)
+        {
+            return res.status(400).json
+            (
+                {
+                    message: "Number of seats must be a positive integer"
+                }
+            );
+        }
 
         const selectedLab = await Lab.findById(lab);
 
@@ -50,7 +75,7 @@ const createReservation = async (req, res) => {
         const existReservation = await Reservation.findOne({
 
             lab,
-            date,
+            date:bookingDate,
             startTime: { $lt: endTime },
             endTime: { $gt: startTime }
         });
@@ -66,7 +91,7 @@ const createReservation = async (req, res) => {
     const reservation = await Reservation.create({
             user,
             lab,
-            date,
+            date:bookingDate,
             startTime,
             endTime,
             reason,
@@ -92,7 +117,7 @@ const getReservations = async (req, res) => {
 
     catch (error) {
         res.status(500).json(
-            { messege: error.message }
+            { message: error.message }
         );
     }
 
@@ -109,7 +134,7 @@ const getReservationsById = async (req, res) => {
             return res.status(404).json
                 (
                     {
-                        messege : " Reservation Not Found "
+                        message : " Reservation Not Found "
                     }
                 );
         }
@@ -122,7 +147,7 @@ const getReservationsById = async (req, res) => {
 
             (
                 {
-                    messege : error.message
+                    message : error.message
                 }
             );
 
@@ -130,5 +155,138 @@ const getReservationsById = async (req, res) => {
 
 };
 
+const updateReservations = async (req , res) => {
+    try {
+        const { id } = req.params;
+        const { date, startTime, endTime, reason, numOfSeats } = req.body;
 
-export { createReservation,getReservations,getReservationsById };
+        const reservation = await Reservation.findById(id);
+
+        if (!reservation)
+        {
+            return res.status(404).json
+                (
+                    {
+                        message : "Sorry!.. Reservation Not Found"
+                    }
+                );
+        }
+
+        const newStartTime = startTime ?? reservation.startTime;
+        const newEndTime = endTime ?? reservation.endTime;
+        const newDate = date ? new Date(date) : reservation.date;
+
+        if (isNaN(newDate.getTime()))
+        {
+            return res.status(400).json
+            (
+                {
+                    message: "Invalid date"
+                }
+            );
+        }
+
+
+
+
+        if (newStartTime >= newEndTime)
+        {
+            return res.status(400).json
+            (
+                {
+                    message: " New Start time must be earlier than New end time "
+                }
+            );
+        }
+        const existReservation = await Reservation.findOne
+            (
+                {
+                    _id : { $ne: id },
+                    lab : reservation.lab,
+                    date : newDate,
+                    startTime : { $lt: newEndTime },
+                    endTime : { $gt: newStartTime }
+                }
+            );
+
+        if (existReservation)
+        {
+            return res.status(400).json
+                (
+                    {
+                        message: "This time slot is already booked for other lab"
+                    }
+                );
+        }
+
+        const newSeats = numOfSeats ?? reservation.numOfSeats;
+        const lab = await Lab.findById(reservation.lab);
+        if (!lab)
+        {
+            return res.status(404).json
+            (
+                {
+                  message: "Lab Not Found."
+                }
+
+            );
+        }
+
+        if (!Number.isInteger(newSeats) || newSeats <= 0)
+        {
+            return res.status(400).json
+            (
+                {
+                  message: "no of seats should be postive integer"
+                }
+
+            );
+        }
+
+        if (newSeats > lab.seatCount)
+        {
+            return res.status(400).json
+            (
+                {
+                  message: "seats exceed lab capacity "
+                }
+
+            );
+        }
+
+        const updateReservation = await Reservation.findByIdAndUpdate
+
+        (
+            id,
+            {
+                date: newDate,
+                startTime:newStartTime,
+                endTime:newEndTime,
+                reason:reason ?? reservation.reason,
+                numOfSeats: newSeats
+            },
+
+            { new:true , runValidators:true }
+        );
+        res.status(200).json
+        (
+            {
+                message: "Reservation Updated.",
+                reservation: updateReservation
+            }
+        );
+
+    }
+    catch (error)
+    {
+        res.status(500).json
+        (
+            {
+                message: error.message
+            }
+
+        );
+
+    }
+};
+export { createReservation,getReservations,getReservationsById,updateReservations };
