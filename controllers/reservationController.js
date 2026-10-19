@@ -275,7 +275,6 @@ const updateReservations = async (req , res) => {
                 reservation: updateReservation
             }
         );
-
     }
     catch (error)
     {
@@ -289,4 +288,40 @@ const updateReservations = async (req , res) => {
 
     }
 };
-export { createReservation,getReservations,getReservationsById,updateReservations };
+
+const deleteReservation = async (req, res) => {
+            try
+            {
+                const { id } = req.params;
+                const reservation = await Reservation.findByIdAndDelete(id);
+                if (!reservation)
+                {
+                    res.status(404).json
+
+                        (
+                            {
+                                message: "Reservation Not Found"
+                            }
+                        );
+
+                }
+                res.status(200).json
+                (
+                    {
+                        messege : "Reservation Deleted Successfully"
+                    }
+                );
+            }
+            catch (error) {
+                res.status(500).json
+
+                    (
+                        {
+                            message: error.message
+                        }
+                    );
+
+            }
+
+        };
+export { createReservation,getReservations,getReservationsById,updateReservations,deleteReservation };
