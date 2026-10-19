@@ -98,5 +98,37 @@ const getReservations = async (req, res) => {
 
 };
 
+const getReservationsById = async (req, res) => {
+    try
+    {
+        const { id } = req.params;
+        const reservation = await Reservation.findById(id);
 
-export { createReservation,getReservations };
+        if (!reservation)
+        {
+            return res.status(404).json
+                (
+                    {
+                        messege : " Reservation Not Found "
+                    }
+                );
+        }
+        res.status(200).json(reservation);
+    }
+
+    catch ( error )
+    {
+        res.status(500).json
+
+            (
+                {
+                    messege : error.message
+                }
+            );
+
+    }
+
+};
+
+
+export { createReservation,getReservations,getReservationsById };
