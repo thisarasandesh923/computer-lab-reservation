@@ -84,4 +84,19 @@ const createReservation = async (req, res) => {
 
 };
 
-export { createReservation };
+const getReservations = async (req, res) => {
+    try {
+        const reservations = await Reservation.find();
+        res.status(200).json(reservations);
+        }
+
+    catch (error) {
+        res.status(500).json(
+            { messege: error.message }
+        );
+    }
+
+};
+
+
+export { createReservation,getReservations };
