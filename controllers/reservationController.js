@@ -1,6 +1,6 @@
 import Reservation from "../models/Reservation.js";
 import Lab from "../models/laboratory.js";
-
+import mongoose from "mongoose";
 
 const createReservation = async (req, res) => {
     try {
@@ -127,6 +127,17 @@ const getReservationsById = async (req, res) => {
     try
     {
         const { id } = req.params;
+
+        if (!mongoose.isValidObjectId(id))
+            {
+            return res.status(400).json
+                (
+                    {
+                        message: "Invalid Reservation ID"
+                    }
+
+                );
+            }
         const reservation = await Reservation.findById(id);
 
         if (!reservation)
@@ -158,6 +169,19 @@ const getReservationsById = async (req, res) => {
 const updateReservations = async (req , res) => {
     try {
         const { id } = req.params;
+
+        if (!mongoose.isValidObjectId(id))
+        {
+            return res.status(400).json
+                (
+                    {
+                        message: "Invalid Reservation ID"
+                    }
+                );
+        }
+
+
+
         const { date, startTime, endTime, reason, numOfSeats } = req.body;
 
         const reservation = await Reservation.findById(id);
@@ -293,6 +317,17 @@ const deleteReservation = async (req, res) => {
             try
             {
                 const { id } = req.params;
+
+                if (!mongoose.isValidObjectId(id))
+
+                {
+                    return res.status(400).json
+                    (
+                        {
+                            message: "Invalid Reservation ID"
+                        }
+                    );
+                }
                 const reservation = await Reservation.findByIdAndDelete(id);
                 if (!reservation)
                 {
