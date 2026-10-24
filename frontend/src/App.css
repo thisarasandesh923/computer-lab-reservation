@@ -30,6 +30,7 @@
     text-decoration: none;
     font-size: 15px;
     font-weight: 600;
+    border: 2px solid transparent;
     border-radius: 8px;
     text-align: center;
     transition: background-color 0.2s ease;
@@ -38,6 +39,11 @@
 .nav-link:hover {
     background-color: #4a2a0b;
     color: white;
+}
+
+.nav-link.active {
+    border-color: #d5ad76;
+    background-color: #4a2a0b;
 }
 
 .nav-link:focus-visible {
@@ -89,9 +95,11 @@
 /* Explore Labs Button */
 
 .explore-btn {
+    display: inline-block;
     padding: 15px 32px;
     background-color: #d5ad76;
     color: #332211;
+    text-decoration: none;
     border: none;
     border-radius: 6px;
     font-size: 16px;
@@ -102,13 +110,74 @@
 
 .explore-btn:hover {
     background-color: #f0c992;
+    color: #332211;
+}
+
+
+/* Feature Section */
+
+.features-section {
+    background-color: #faf7f2;
+    padding: 80px 8%;
+    text-align: center;
+}
+
+.features-section h2 {
+    font-size: 34px;
+    color: #4a2a0b;
+    margin: 0 0 15px;
+}
+
+.features-intro {
+    font-size: 17px;
+    color: #6b5540;
+    margin: 0 auto 40px;
+    max-width: 600px;
+    line-height: 1.6;
+}
+
+.features-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.feature-card {
+    background-color: #ffffff;
+    padding: 35px 25px;
+    border: 1px solid #eee2d4;
+    border-radius: 14px;
+    box-shadow: 0 5px 20px rgba(74, 42, 11, 0.06);
+    transition: transform 0.2s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 38px;
+    margin-bottom: 18px;
+}
+
+.feature-card h3 {
+    font-size: 20px;
+    color: #4a2a0b;
+    margin: 0 0 14px;
+}
+
+.feature-card p {
+    font-size: 15px;
+    color: #6b5540;
+    line-height: 1.7;
+    margin: 0;
 }
 
 
 /* Footer */
 
 .footer {
-    background-color: #2c2019;
+    background-color: #352014;
     color: white;
     padding: 65px 8% 20px;
 }
@@ -156,7 +225,7 @@
 }
 
 .footer-column a:hover {
-    color: #8a8379;
+    color: #d5ad76;
 }
 
 .footer-bottom {
@@ -164,18 +233,18 @@
     justify-content: space-between;
     gap: 20px;
     flex-wrap: wrap;
-    border-top: 1px solid #faf8f6;
+    border-top: 1px solid #73533e;
     padding-top: 20px;
 }
 
 .footer-bottom p {
-    color: #ebd0b7;
+    color: #cdb8a4;
     font-size: 13px;
     margin: 0;
 }
 
 
-/* Responsive Design */
+/* Mobile Responsive */
 
 @media (max-width: 768px) {
 
@@ -208,6 +277,18 @@
         font-size: 16px;
     }
 
+    .features-section {
+        padding: 50px 20px;
+    }
+
+    .features-section h2 {
+        font-size: 28px;
+    }
+
+    .features-container {
+        grid-template-columns: 1fr;
+    }
+
     .footer {
         padding: 45px 25px 20px;
     }
@@ -224,10 +305,173 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-
     .nav-link,
     .explore-btn,
+    .feature-card,
     .footer-column a {
         transition: none;
+    }
+}
+
+.auth-page {
+    min-height: 650px;
+    padding: 60px 8%;
+    background-color: #faf7f2;
+}
+
+.auth-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 45px rgba(53, 32, 20, 0.1);
+}
+
+.auth-form-section {
+    display: flex;
+    align-items: center;
+    padding: 60px;
+}
+
+.auth-form-content {
+    width: 100%;
+}
+
+.auth-label {
+    color: #a66b25;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2px;
+}
+
+.auth-form-content h1 {
+    color: #352014;
+    font-size: 36px;
+    margin: 15px 0;
+}
+
+.auth-description {
+    color: #786756;
+    line-height: 1.7;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 22px;
+}
+
+.form-group label {
+    display: block;
+    color: #352014;
+    font-weight: 600;
+    margin-bottom: 9px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px 15px;
+    border: 1px solid #d8c9b8;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-color: #a66b25;
+    box-shadow: 0 0 0 3px rgba(166, 107, 37, 0.12);
+}
+
+.auth-submit-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    background-color: #75410d;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.auth-submit-btn:hover {
+    background-color: #4a2a0b;
+}
+
+.auth-switch {
+    text-align: center;
+    color: #786756;
+    margin-top: 24px;
+}
+
+.auth-switch a {
+    color: #75410d;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.auth-switch a:hover {
+    text-decoration: underline;
+}
+
+/* Illustration Panel */
+
+.auth-image-section {
+    background-color: #ead9c4;
+    padding: 55px 35px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.auth-image-section img {
+    width: 100%;
+    max-width: 470px;
+    height: auto;
+    object-fit: contain;
+}
+
+.auth-image-section h2 {
+    color: #352014;
+    font-size: 27px;
+    margin: 20px 0 12px;
+}
+
+.auth-image-section p {
+    color: #654a33;
+    max-width: 350px;
+    line-height: 1.7;
+}
+
+/* Mobile Layout */
+
+@media (max-width: 768px) {
+    .auth-page {
+        padding: 25px 15px;
+    }
+
+    .auth-container {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-form-section {
+        padding: 40px 25px;
+    }
+
+    .auth-form-content h1 {
+        font-size: 29px;
+    }
+
+    .auth-image-section {
+        padding: 30px 25px;
+    }
+
+    .auth-image-section img {
+        max-width: 280px;
     }
 }
