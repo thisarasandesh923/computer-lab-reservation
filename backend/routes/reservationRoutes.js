@@ -1,20 +1,48 @@
+
 import express from "express";
 import {
-    createReservation,
-    getReservations,
-    getReservationsById,
-    updateReservations,
-    deleteReservation
+  createReservation,
+  getReservations,
+  getReservationsById,
+  updateReservations,
+  deleteReservation,
+  reviewReservation
 } from "../controllers/reservationController.js";
+
+import { protect, authorize } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", createReservation);
-router.get("/", getReservations);
-router.get("/:id", getReservationsById);
-router.put("/:id", updateReservations);
-router.delete("/:id", deleteReservation);
+router.post(
+  "/",
+  protect,
+  authorize("representative"),
+  createReservation
+);
 
+router.get("/", protect, getReservations);
 
+router.get("/:id", protect, getReservationsById);
+
+router.put(
+  "/:id",
+  protect,
+  authorize("representative"),
+  updateReservations
+);
+
+router.delete(
+  "/:id",
+  protect,
+  authorize("representative"),
+  deleteReservation
+);
+
+router.patch(
+  "/:id/review",
+  protect,
+  authorize("module_coordinator", "lab_coordinator", "instructor"),
+  reviewReservation
+);
 
 export default router;
