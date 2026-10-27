@@ -1,31 +1,55 @@
 
-import './App.css';
+import "./App.css";
 
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route } from "react-router-dom";
 
-import Navbar from './components/Navbar.jsx';
-import Footer from './components/Footer.jsx';
+import Navbar from "./components/Navbar.jsx";
+import Footer from "./components/Footer.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
-import Home from './pages/home.jsx';
-import Labs from './pages/labs.jsx';
-import Login from './pages/login.jsx';
-import Register from './pages/register.jsx';
+import Home from "./pages/home.jsx";
+import Labs from "./pages/labs.jsx";
+import Login from "./pages/login.jsx";
+import Register from "./pages/register.jsx";
+import MyReservations from "./pages/myReservations.jsx";
+import CreateReservation from "./pages/createReservation.jsx";
+import StaffDashboard from "./pages/staffDashboard.jsx";
 
 function App() {
-    return (
-        <div>
-            <Navbar />
+  return (
+    <div>
+      <Navbar />
 
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/labs" element={<Labs />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-            </Routes>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-            <Footer />
-        </div>
-    );
+        <Route element={<ProtectedRoute allowedRoles={["representative"]} />}>
+          <Route path="/labs" element={<Labs />} />
+          <Route path="/my-reservations" element={<MyReservations />} />
+          <Route path="/reservations/new" element={<CreateReservation />} />
+        </Route>
+
+        <Route
+          element={
+            <ProtectedRoute
+              allowedRoles={[
+                "module_coordinator",
+                "lab_coordinator",
+                "instructor"
+              ]}
+            />
+          }
+        >
+          <Route path="/staff" element={<StaffDashboard />} />
+        </Route>
+
+      </Routes>
+
+      <Footer />
+    </div>
+  );
 }
 
 export default App;

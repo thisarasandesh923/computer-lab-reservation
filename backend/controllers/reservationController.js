@@ -157,6 +157,7 @@ const getReservations = async (req, res) => {
     }
 
     const reservations = await Reservation.find(filter)
+       .populate("lab", "labName labVenue")
       .sort({ date: -1, startTime: 1 });
 
     return res.status(200).json(reservations);

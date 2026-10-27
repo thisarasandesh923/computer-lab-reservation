@@ -1,106 +1,164 @@
 
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import loginImage from '../assets/login.png';
+import { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import loginImage from "../assets/login.png";
 
 function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    function handleSubmit(event) {
-        event.preventDefault();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-        console.log('Email:', email);
-        console.log('Login form submitted');
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError("");
+
+    if (!email.trim() || !password) {
+      setError("Please enter your email and password");
+      return;
     }
 
-    return (
-        <main className="auth-page">
-            <div className="auth-container">
+    try {
+      setLoading(true);
 
-                <div className="auth-form-section">
-                    <div className="auth-form-content">
-                        <span className="auth-label">
-                            WELCOME BACK
-                        </span>
+      const response = await fetch("http://localhost:5000/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: email.trim(),
+          password
+        })
+      });
 
-                        <h1>Login to Your Account</h1>
+      const data = await response.json();
 
-                        <p className="auth-description">
-                            Sign in to access laboratories,
-                            manage reservations, and track
-                            your booking requests.
-                        </p>
+      if (!response.ok) {
+        setError(data.message || "Login failed");
+        return;
+      }
 
-                        <form onSubmit={handleSubmit}>
-                            <div className="form-group">
-                                <label htmlFor="email">
-                                    Email Address
-                                </label>
+      sessionStorage.setItem("token", data.token);
+      sessionStorage.setItem("user", JSON.stringify(data.user));
 
-                                <input
-                                    type="email"
-                                    id="email"
-                                    placeholder="Enter your email"
-                                    value={email}
-                                    onChange={(event) =>
-                                        setEmail(event.target.value)
-                                    }
-                                    required
-                                />
-                            </div>
+      if (data.user.role === "representative") {
+        navigate("/labs", { replace: true });
+      } else {
+        navigate("/staff", { replace: true });
+      }
 
-                            <div className="form-group">
-                                <label htmlFor="password">
-                                    Password
-                                </label>
+    } catch (error) {
+      setError("Cannot connect to server. Please try again");
 
-                                <input
-                                    type="password"
-                                    id="password"
-                                    placeholder="Enter your password"
-                                    value={password}
-                                    onChange={(event) =>
-                                        setPassword(event.target.value)
-                                    }
-                                    required
-                                />
-                            </div>
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                            <button
-                                type="submit"
-                                className="auth-submit-btn"
-                            >
-                                Login
-                            </button>
-                        </form>
+  return (
+    <main className="auth-page">
+      <div className="auth-container">
 
-                        <p className="auth-switch">
-                            Don't have an account?{' '}
-                            <Link to="/register">
-                                Sign Up
-                            </Link>
-                        </p>
-                    </div>
-                </div>
+        <div className="auth-form-section">
+          <div className="auth-form-content">
 
-                <div className="auth-image-section">
-                    <img
-                        src={loginImage}
-                        alt="Student accessing the lab reservation system"
-                    />
+            <span className="auth-label">
+              WELCOME BACK
+            </span>
 
-                    <h2>Smarter Lab Reservations</h2>
+            <h1>Login to Your Account</h1>
 
-                    <p>
-                        One platform to check availability
-                        and manage laboratory bookings.
-                    </p>
-                </div>
+            <p className="auth-description">
+              Sign in to access laboratories,
+              manage reservations, and track
+              your booking requests.
+            </p>
 
-            </div>
-        </main>
-    );
+            {location.state?.message && (
+              <p className="auth-success" role="status">
+                {location.state.message}
+              </p>
+            )}
+
+            {error && (
+              <p className="auth-error" role="alert">
+                {error}
+              </p>
+            )}
+
+            <form onSubmit={handleSubmit}>
+
+              <div className="form-group">
+                <label htmlFor="login-email">
+                  Email Address
+                </label>
+
+                <input
+                  type="email"
+                  id="login-email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="login-password">
+                  Password
+                </label>
+
+                <input
+                  type="password"
+                  id="login-password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="auth-submit-btn"
+                disabled={loading}
+              >
+                {loading ? "Logging in..." : "Login"}
+              </button>
+
+            </form>
+
+            <p className="auth-switch">
+              Don't have an account?{" "}
+              <Link to="/register">
+                Sign Up
+              </Link>
+            </p>
+
+          </div>
+        </div>
+
+        <div className="auth-image-section">
+          <img
+            src={loginImage}
+            alt="Student accessing the lab reservation system"
+          />
+
+          <h2>Smarter Lab Reservations</h2>
+
+          <p>
+            One platform to check availability
+            and manage laboratory bookings.
+          </p>
+        </div>
+
+      </div>
+    </main>
+  );
 }
 
 export default Login;
