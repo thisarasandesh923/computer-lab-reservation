@@ -448,11 +448,83 @@ const reviewReservation = async (req, res) => {
   }
 };
 
+
+
+ const getLabAvailability = async (req, res) => {
+  try {
+    const { lab, date } = req.query;
+
+    if (!lab || !mongoose.Types.ObjectId.isValid(lab)) {
+      return res.status(400).json({
+        message: "Please select a valid laboratory"
+      });
+    }
+
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return res.status(400).json({
+        message: "Please select a valid date"
+      });
+    }
+
+    const startDate = new Date(`${date}T00:00:00.000Z`);
+
+    if (
+      Number.isNaN(startDate.getTime()) ||
+      startDate.toISOString().slice(0, 10) !== date
+    ) {
+      return res.status(400).json({
+        message: "Invalid reservation date"
+      });
+    }
+
+    const endDate = new Date(startDate);
+    endDate.setUTCDate(endDate.getUTCDate() + 1);
+
+    const laboratory = await Lab.findById(lab);
+
+    if (!laboratory) {
+      return res.status(404).json({
+        message: "Laboratory not found"
+      });
+    }
+
+    const bookedSlots = await Reservation.find({
+      lab,
+      date: {
+        $gte: startDate,
+        $lt: endDate
+      },
+      status: {
+        $in: ["pending", "approved"]
+      }
+    })
+      .select("startTime endTime status -_id")
+      .sort({ startTime: 1 });
+
+    return res.status(200).json({
+      lab: {
+        _id: laboratory._id,
+        labName: laboratory.labName,
+        labVenue: laboratory.labVenue
+      },
+      date,
+      bookedSlots
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: "Failed to check laboratory availability"
+    });
+  }
+};
+
+
 export {
   createReservation,
   getReservations,
   getReservationsById,
   updateReservations,
   deleteReservation,
-  reviewReservation
+  reviewReservation,
+  getLabAvailability
 };

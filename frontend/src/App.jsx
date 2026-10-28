@@ -14,6 +14,7 @@ import Register from "./pages/register.jsx";
 import MyReservations from "./pages/myReservations.jsx";
 import CreateReservation from "./pages/createReservation.jsx";
 import StaffDashboard from "./pages/staffDashboard.jsx";
+import LabAvailability from "./pages/labAvailability.jsx";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/labs" element={<Labs />} />
           <Route path="/my-reservations" element={<MyReservations />} />
           <Route path="/reservations/new" element={<CreateReservation />} />
+          <Route path="/availability" element={<LabAvailability />} />
         </Route>
 
         <Route
@@ -44,7 +46,6 @@ function App() {
         >
           <Route path="/staff" element={<StaffDashboard />} />
         </Route>
-
       </Routes>
 
       <Footer />

@@ -56,17 +56,23 @@ function Navbar() {
                     </>
                 )}
 
-                {isLoggedIn && !isStaff && (
-                    <>
-                        <NavLink to="/labs" className="nav-link">
-                            Labs
-                        </NavLink>
 
-                        <NavLink to="/my-reservations" className="nav-link">
+                        {isLoggedIn && !isStaff && (
+                        <>
+                            <NavLink to="/labs" className="nav-link">
+                            Labs
+                            </NavLink>
+
+                            <NavLink to="/availability" className="nav-link">
+                            Check Availability
+                            </NavLink>
+
+                            <NavLink to="/my-reservations" className="nav-link">
                             My Reservations
-                        </NavLink>
-                    </>
-                )}
+                            </NavLink>
+                        </>
+                        )}
+
 
                 {isLoggedIn && isStaff && (
                     <NavLink to="/staff" className="nav-link">

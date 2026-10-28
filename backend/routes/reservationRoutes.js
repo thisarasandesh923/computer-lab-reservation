@@ -6,7 +6,8 @@ import {
   getReservationsById,
   updateReservations,
   deleteReservation,
-  reviewReservation
+  reviewReservation,
+  getLabAvailability
 } from "../controllers/reservationController.js";
 
 import { protect, authorize } from "../middleware/authMiddleware.js";
@@ -21,6 +22,7 @@ router.post(
 );
 
 router.get("/", protect, getReservations);
+router.get("/availability", protect, getLabAvailability);
 
 router.get("/:id", protect, getReservationsById);
 

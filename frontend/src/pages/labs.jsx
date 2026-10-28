@@ -136,12 +136,25 @@ function Labs() {
                     💺 Capacity: {lab.seatCount} seats
                   </p>
 
-                  <Link
-                    to={`/reservations/new?lab=${lab._id}`}
-                    className="lab-action-btn"
-                  >
-                    Request Reservation
-                  </Link>
+
+                  <div className="lab-card-actions">
+
+                    <Link
+                      to={`/availability?lab=${lab._id}`}
+                      className="lab-availability-btn"
+                    >
+                      Check Availability
+                    </Link>
+
+                    <Link
+                      to={`/reservations/new?lab=${lab._id}`}
+                      className="lab-action-btn"
+                    >
+                      Request Reservation
+                    </Link>
+
+                  </div>
+
 
                 </div>
               </article>

@@ -9,9 +9,17 @@ function CreateReservation() {
 
   const [labs, setLabs] = useState([]);
   const [lab, setLab] = useState(searchParams.get("lab") || "");
-  const [date, setDate] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+ const [date, setDate] = useState(
+  searchParams.get("date") || ""
+);
+
+const [startTime, setStartTime] = useState(
+  searchParams.get("startTime") || ""
+);
+
+const [endTime, setEndTime] = useState(
+  searchParams.get("endTime") || ""
+);
   const [reason, setReason] = useState("");
   const [numOfSeats, setNumOfSeats] = useState("");
 
